@@ -1,0 +1,169 @@
+{extend name="index_layout"/}
+{block name="main"}
+<style type="text/css">
+    .with400{width:400px!important}
+    .upload-file{
+        position:relative;
+      display: inline-block;
+    height: 38px;
+    line-height: 38px;
+    padding: 0 18px;
+    background-color: #009688;
+    color: #fff;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 14px;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    }
+
+    .upload-file span{ 
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .upload-file input[type='file']{
+      height: 100%;
+      width: 100%;
+      position: absolute; 
+      top: 0;
+      right: 0;
+      opacity: 0;  
+      filter: alpha(opacity=0);
+      cursor: pointer;
+    }
+</style>
+<div class="layui-card">
+	<div class="layui-card-header">添加商品</div>
+    <div class="layui-card-body">
+        <form class="layui-form " id="myform" action="{:url('admin/goods/add')}" method="post" enctype="multipart/form-data">
+            <div class="layui-form-item">
+                <label class="layui-form-label">所属分类</label>
+                <div class="layui-input-inline with400" id="tipsc">
+                    <select name="cid" lay-filter="cid">
+                        {volist name="goods_class" id="vo"}
+                        <option value="{$vo['id']}">{$vo.name}</option>
+                        {/volist}
+                    </select>                  
+                </div>                 
+            </div>
+            <!-- 商品封面 -->
+            <div class="layui-form-item layui-ceals">
+                <label class="layui-form-label">套餐封面</label>               
+                <div class="layui-upload">
+                 <div class="bigbox">
+                  <div class="upload-file">
+                    <input type="file" class="input-file imgInput" name="file">  
+                    <span class="tip">选择图片</span>
+                  </div>
+                
+                  <div class="layui-upload-list" style="padding-left:110px">
+                    <p class="demoText" >
+                        <img src=""  class="imgs">
+                    </p>
+                  </div>
+                 </div>
+                </div>  
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">商品名称</label>
+                <div class="layui-input-inline with400">
+                    <input type="text" name="title" lay-verify="title" placeholder="商品名称" class="layui-input">
+                </div>
+       <!--          <div class="layui-form-mid layui-word-aux">3-15位字符，可由字母和数字，下划线"_"及破折号"-"组成。</div> -->
+            </div>
+           
+            <div class="layui-form-item">
+                <label class="layui-form-label">所需积分</label>
+                <div class="layui-input-inline with400">
+                    <input type="text" name="need_point" lay-verify="need_point" autocomplete="off" placeholder="所需积分" class="layui-input">
+                </div>               
+            </div>
+            
+            <div class="layui-form-item">
+                <label class="layui-form-label">结束时间</label>
+                <div class="layui-input-inline with400">
+                    <input type="text" name="endtime" lay-verify="endtime" autocomplete="off" placeholder="yyyy-MM-dd HH:mm:ss" class="layui-input times">
+                </div>
+            </div>
+
+            
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" type="submit">立即提交</button>
+                    <a class="layui-btn layui-btn-normal" href="{:url('admin/goods/index')}">返回</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{/block}
+{block name="script"}
+
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/jquery.form.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/common.js"></script>
+<script type="text/javascript">
+  $(".imgInput").change(function(){
+      var thisfile = $(this)[0].files[0];
+      var sFileName=(/[.]/.exec(thisfile['name'])) ? /[^.]+$/.exec(thisfile['name'].toLowerCase()) : '';//获取文件后缀名
+      // alert(sFileName);
+      if(sFileName=='png' || sFileName=='jpeg' || sFileName=='gif' || sFileName=='jpg'){
+        
+         $(this).parents('.bigbox').find('.imgs').attr("src",URL.createObjectURL(thisfile)).css({"width":"200px","height":"150px"});
+      }else{
+        alert('上传图片格式不正确');return false;
+      }
+   });
+
+  $(function(){
+       $('#myform').ajaxForm({
+              beforeSubmit:function(){
+                // alert(1)
+                 //if(!confirm('评分提交后就不能修改了，确定现在提交吗？')) return false;
+              },
+              success:function(result){
+            
+                layer.msg(result.msg);
+
+                if(result.code==1){
+                    // alert(result.url)
+                    window.location.href = result.url;
+                }
+              }
+          });   
+     });
+</script>
+<script type="text/javascript">
+ layui.use('laydate', function(){
+    var laydate = layui.laydate;
+
+
+
+     //循环弹出日期
+     $('.times').each(function(){
+        laydate.render({
+          elem: this
+          ,position: 'fixed'
+          ,trigger: 'click'
+          ,type: 'datetime'
+        });
+      });
+    //
+    $('.rangetime').each(function(){
+      laydate.render({
+        elem: this
+        ,position: 'fixed'
+        ,trigger: 'click'
+        ,format: 'yyyy-MM-dd'
+        ,range: true
+      });
+    })
+
+ 
+
+
+  });
+</script>
+{/block}

@@ -1,0 +1,73 @@
+{extend name="index_layout"/}
+{block name="main"}
+<style type="text/css">
+ /*.layui-ceals{width:32%;float:left;clear:none}*/
+  /*.w420{width:320px!important}*/
+.layui-form-item  .layui-input-inline{width:300px}
+.zhuangtai{width:70%!important}
+</style>
+<div class="layui-card">
+    <div class="layui-card-header">订单详情</div>
+    <div class="layui-card-body">
+        <form class="layui-form form-horizontal" action="{:url('admin/Order/edit')}" method="post">
+            <!-- <input type="hidden" name="id" value="{$data.id}" /> -->
+            <div class="layui-form-item layui-ceals">
+                <label class="layui-form-label">订单编号</label>
+                <div class="layui-input-inline w420">
+                    <input type="text" name="" lay-verify="order_number" readonly="" class="layui-input" value="{$data.order_number}">
+                </div>
+                
+            </div>
+            <div class="layui-form-item layui-ceals">
+                <label class="layui-form-label">下单人</label>
+                <div class="layui-input-inline w420">
+                    <input type="text" name="" lay-verify="memberid" readonly="" class="layui-input" value="{:getmembername($data.memberid)}">
+                </div>
+            </div>
+            <div class="layui-form-item layui-ceals">
+                <label class="layui-form-label">贷款金额</label>
+                <div class="layui-input-inline w420">
+                    <input type="text" name="" readonly="" lay-verify="loan_amount" class="layui-input" value="{$data.loan_amount}">
+                </div>
+            </div>
+            <div class="layui-form-item layui-ceals">
+                <label class="layui-form-label">利率</label>
+                <div class="layui-input-inline w420">
+                    <input type="text" name="" readonly="" lay-verify="interest_rate" class="layui-input" value="{$data.interest_rate}">
+                </div>
+            </div>
+            <div class="layui-form-item layui-ceals">
+                <label class="layui-form-label">下单时间</label>
+                <div class="layui-input-inline w420">
+                    <input type="text" name="" readonly="" lay-verify="addtime" class="layui-input" value="{$data.addtime|date='Y-m-d H:i:s'}">
+                </div>
+            </div>
+            <input type="hidden" name="id" value="{$data.id}">
+            <div class="layui-form-item layui-ceals">
+                <label class="layui-form-label">审核状态</label>
+                <div class="layui-input-inline zhuangtai">
+                    <input type="radio" name="status" value="0" title="待审核" {if $data.status == 0}checked=""{/if}>
+                    <input type="radio" name="status" value="1" title="已审核" {if $data.status == 1}checked=""{/if}>
+                    <input type="radio" name="status" value="2" title="还款中" {if $data.status == 2}checked=""{/if}>
+                    <input type="radio" name="status" value="3" title="已结清" {if $data.status == 3}checked=""{/if}>
+                    <input type="radio" name="status" value="4" title="已驳回" {if $data.status == 4}checked=""{/if}>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn ajax-post" lay-submit="" lay-filter="*" target-form="form-horizontal">更改状态</button>
+                    <!-- <button class="layui-btn layui-btn-normal" onClick="javascript :history.back(-1);">返回</button> -->
+                    <a class="layui-btn layui-btn-normal" href="{:url('admin/Order/index',array('id'=>$data.status))}">返回</a>
+                </div>
+            </div>
+        </form>
+       
+
+
+    </div>
+</div>
+{/block}
+{block name="script" }
+<script type="text/javascript" src="__STATIC__/admin/js/common.js"></script>
+{/block}

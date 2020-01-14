@@ -15,6 +15,20 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 
+/public/public 
+/public/public/excel
+/public/public/banner
+/public/public/files
+/public/public/mp4
+/public/public/qrcode
+/public/public/rules
+/public/public/uploads
+/public/ueditor
+/runtime
+/public/uploads
+/public/upload
+/public/static/uploads
+
 # Windows shortcuts
 *.lnk
 

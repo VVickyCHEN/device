@@ -1,0 +1,120 @@
+{extend name="index_layout"/}
+{block name="main"}
+<style type="text/css">
+    .daoru{position:absolute;top:1px;right:-50px;height:35px}
+   .laytable-cell-1-0-3{  /*设置列表图片高度*/
+       height: 100%;
+       max-width: 100%;
+   } 
+</style>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <div class="layui-form">
+            <blockquote class="layui-elem-quote news_search">
+                <div class="layui-inline">
+                    <!-- <a class="layui-btn layui-btn-sm" href="{:url('admin/order/add')}">添加</a> -->
+                </div>
+                <div class="layui-input-inline" style="margin-left:30px;">
+                   <form method="get" action="{:url('order/index')}" class="form-signin" enctype="multipart/form-data">
+                    <input type="text" name="search" placeholder="订单编号搜索" autocomplete="off" class="layui-input">
+                    <input type="submit" value="搜索" class="layui-btn layui-btn-sm daoru">
+                  </form>
+                 </div>  
+            </blockquote>
+            <div class="layui-tab" lay-filter="tab1">
+              <ul class="layui-tab-title">
+                <li class="{if $status==0}layui-this{/if}"  data-id="1">待审核</li>              
+                <li class="{if $status==1}layui-this{/if}"  data-id="2">已审核</li>              
+                <li class="{if $status==2}layui-this{/if}"  data-id="3">还款中</li>              
+                <li class="{if $status==3}layui-this{/if}"  data-id="4">已结清</li>              
+                <li class="{if $status==4}layui-this{/if}"  data-id="5">已驳回</li>              
+              </ul>
+              <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                  <table class="layui-table" lay-filter="test3"  lay-data="{id: '#test3',page:true,limit:10}">
+                      <thead>
+                          <tr>
+                              <th lay-data="{field:'xuhao',width:80,}">序号</th>
+                              <th  lay-data="{field:'order_number',width:250}">订单编号</th>
+                              <th  lay-data="{field:'memberid',}">下单人</th>
+                              <th  lay-data="{field:'loan_amount',}">贷款金额</th>
+                              <th  lay-data="{field:'interest_rate',}">利率</th>
+                              <th  lay-data="{field:'addtime',}">下单时间</th>
+                              <th  lay-data="{field:'edit',width:120,}">操作</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {volist name="data" id="vo"}
+                          <tr>
+                              <td>{$i}</td>
+                              <td>{$vo.order_number}</td>
+                              <td>{$vo.mname}</td>
+                              <td>{$vo.loan_amount}</td>
+                              <td>{$vo.interest_rate}</td>
+                              <td>{$vo.addtime|date='Y-m-d H:i:s'}</td>
+                              <td>
+                                 <a class="layui-btn layui-btn-xs" href="{:url('admin/order/edit',['id'=>$vo.id])}">查看</a>
+                              </td>
+                          </tr>
+                          {/volist}
+                      </tbody>
+                  </table>
+                 <!-- tp自带的分页 -->
+              </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+{/block} {block name="script"}
+<script type="text/javascript" src="__STATIC__/admin/js/common.js"></script>
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<script type="text/javascript">
+layui.use(['form', 'layedit', 'laydate','table','element','jquery'], function(){
+  var form = layui.form
+  ,layer = layui.layer
+  ,layedit = layui.layedit
+  ,laydate = layui.laydate
+  ,table = layui.table
+  ,$ = layui.jquery
+  ,element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块;
+
+
+  //监听指定开关
+  form.on('switch(switchTest)', function(data){
+     if(this.checked){
+        var ispower = 1;
+     }else{
+        var ispower = 0;
+     }
+     var userid = data.othis.siblings(':checkbox[name="open"]').attr('data-userid');
+
+     // alert(id +'---'+ status)
+       $.ajax({
+        type : 'post',
+        url  :  '{:url("manager/status_edit")}',
+        dataType : 'json',
+        data : {userid:userid,ispower:ispower},
+        success : function(re){
+          if(re.status == 1){
+             layer.msg(re.msg);return false;
+          }
+          layer.msg(re.msg);
+          // window.location.reload();
+        }
+       });
+  });
+
+// 选项卡
+   element.on('tab(tab1)', function(data){
+       window.location.href = "{:url('admin/order/index')}"+'?id='+$(this).data('id');
+   });
+
+
+
+});
+  
+ 
+</script>
+{/block}

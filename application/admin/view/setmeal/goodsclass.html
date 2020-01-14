@@ -1,0 +1,128 @@
+{extend name="index_layout"/}
+{block name="main"}
+<style type="text/css">
+    .daoru{position:absolute;top:1px;right:-50px;height:35px}
+    .newaddbox{padding:20px 0}
+    .juz{width:50px;text-align: center;}
+</style>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <div class="layui-form">
+            <blockquote class="layui-elem-quote news_search">
+                <div class="layui-inline">
+                    <a class="layui-btn layui-btn-sm" onclick="myadd()">添加分类</a>
+                </div>
+                <!-- <div class="layui-input-inline" style="margin-left:30px;">
+                   <form method="get" action="{:url('Goods/index')}" class="form-signin" enctype="multipart/form-data">
+                    <input type="text" name="search" placeholder="商品标题搜索" autocomplete="off" class="layui-input">
+                    <input type="submit" value="搜索" class="layui-btn layui-btn-sm daoru">
+                  </form>
+                 </div> -->  
+            </blockquote>
+            <table class="layui-table" lay-filter="test3"  lay-data="{id: '#test3',page:true,limit:10}">
+                <thead>
+                    <tr>
+                        <th lay-data="{field:'xuhao',width:180,}">序号</th>
+                        <th lay-data="{field:'id',width:120,hide:true}">ID</th>
+                        <th  lay-data="{field:'name',edit: 'text',}">分类名</th>
+                        <!--  -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {volist name="goodclass" id="vo"}
+                    <tr>
+                        <td>{$i}</td>
+                        <td>{$vo.id}</td>
+                        <td>{$vo.name}</td>
+                        <!-- <td>
+                           <a class="layui-btn layui-btn-xs" href="{:url('admin/goods/edit',['id'=>$vo.id])}">编辑</a>
+                        </td> -->
+                    </tr>
+                    {/volist}
+                </tbody>
+            </table>
+           <!-- tp自带的分页 -->
+
+        </div>
+    </div>
+</div>
+{/block} {block name="script"}
+<script type="text/javascript" src="__STATIC__/admin/js/common.js"></script>
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+   function myadd(){
+
+         var inputs = '<div class="newaddbox"><div class="layui-form-item"><label class="layui-form-label juz">分类名</label><div class="layui-input-inline w300"><input type="text" name="name" autocomplete="off" value="" class="layui-input"></div></div><div class="layui-input-inline w300"><button id="add_ajax" style="margin-left:150px" class="layui-btn ajax-post">立即提交</button></div></div>';
+           // <div class="layui-form-item"><label class="layui-form-label">设置总分</label><div class="layui-input-inline w300"><input type="number" name="totalnum" autocomplete="off" value="" class="layui-input"></div></div>
+         var width ='420px';
+         var height ='200px';
+        //页面层
+          layer.open({
+            type: 1,
+            fixed: false,    //取消固定定位，因为固定定位是相对body的
+            offset: ['20%', '30%'],   //相对定位
+            skin: 'layui-layer-rim', //加上边框
+            area: [width,height], //宽高
+            title: '添加分类',
+            content: inputs
+          });
+        // 提交分类标题
+           $("#add_ajax").click(function() {
+              var name = $(this).parents(".newaddbox").find("input[name='name']").val();
+              if (!name) {layer.msg('分类名不能留空');return false;}
+              $.ajax({
+                type : 'post',
+                url  :  '{:url("goods/addcate")}',
+                dataType : 'json',
+                data : {name:name},
+                success : function(re){
+                  if(re.status == 0){
+                     layer.msg(re.msg);window.location.reload();
+                  }else{
+                    layer.msg(re.msg);return false;
+                  }
+                }
+               });
+            }); 
+
+    }
+</script>
+<script type="text/javascript">
+layui.use(['form', 'layedit', 'laydate','table'], function(){
+  var form = layui.form
+  ,layer = layui.layer
+  ,layedit = layui.layedit
+  ,laydate = layui.laydate
+  ,table = layui.table;
+
+
+  // 监听单元格编辑
+  table.on('edit(test3)', function(obj){
+    var value = obj.value //得到修改后的值
+    ,data = obj.data //得到所在行所有键值
+
+    ,field = obj.field; //得到字段
+    // layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
+    // alert('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
+    $.ajax({
+        type : 'post',
+        url  :  '{:url("goods/singlefield_edit")}',
+        dataType : 'json',
+        data : {id:data.id,field:field,value:value},
+        success : function(re){
+          if(re.status == 1){
+             layer.msg(re.msg);return false;
+          }
+          layer.msg(re.msg);
+          // window.location.reload();
+        }
+       });
+  });
+
+
+
+});
+  
+ 
+</script>
+{/block}

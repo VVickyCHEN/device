@@ -1,0 +1,97 @@
+{extend name="index_layout"/}
+{block name="main"}
+<style type="text/css">
+    .daoru{position:absolute;top:1px;right:-50px;height:35px}
+
+</style>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <div class="layui-form">
+            <blockquote class="layui-elem-quote news_search">
+                <div class="layui-inline">
+                    <!-- <a class="layui-btn layui-btn-sm" href="{:url('admin/manager/add')}">生成会员</a> -->
+                </div>
+                <div class="layui-input-inline" style="margin-left:30px;">
+                   <form method="get" action="{:url('Member/index')}" class="form-signin" enctype="multipart/form-data">
+                    <input type="text" name="search" placeholder="手机号搜索" autocomplete="off" class="layui-input">
+                    <input type="submit" value="搜索" class="layui-btn layui-btn-sm daoru">
+                  </form>
+                 </div>  
+            </blockquote>
+            <table class="layui-table" lay-filter="test3"  lay-data="{id: '#test3',page:true,limit:10}">
+                <thead>
+                    <tr>
+                        <th lay-data="{field:'xuhao',width:80,}">序号</th>
+                        <th  lay-data="{field:'member_number',}">会员编号</th>
+                        <th  lay-data="{field:'phone',}">手机号</th>
+                        <th  lay-data="{field:'invite_code',}">会员邀请码</th>
+                        <th  lay-data="{field:'integral',}">会员积分</th>
+                        <th  lay-data="{field:'addtime',width:180,}">注册时间</th>
+                        <th  lay-data="{field:'edit',width:120,}">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {volist name="Userlist" id="vo"}
+                    <tr>
+                        <td>{$i}</td>
+                        <td>{$vo.member_number}</td>
+                        <td>{$vo.phone}</td>
+                        <td>{$vo.invite_code}</td>
+                        <td>{$vo.integral}</td>
+                        <td>{$vo.addtime|date='Y-m-d H:i:s'}</td>
+                        <td>
+                           <a class="layui-btn layui-btn-xs" href="{:url('admin/member/edit',['id'=>$vo.id])}">查看</a>
+                        </td>
+                    </tr>
+                    {/volist}
+                </tbody>
+            </table>
+           <!-- tp自带的分页 -->
+
+        </div>
+    </div>
+</div>
+{/block} {block name="script"}
+<script type="text/javascript" src="__STATIC__/admin/js/common.js"></script>
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+layui.use(['form', 'layedit', 'laydate','table'], function(){
+  var form = layui.form
+  ,layer = layui.layer
+  ,layedit = layui.layedit
+  ,laydate = layui.laydate
+  ,table = layui.table;
+
+
+  //监听指定开关
+  form.on('switch(switchTest)', function(data){
+     if(this.checked){
+        var ispower = 1;
+     }else{
+        var ispower = 0;
+     }
+     var userid = data.othis.siblings(':checkbox[name="open"]').attr('data-userid');
+
+     // alert(id +'---'+ status)
+       $.ajax({
+        type : 'post',
+        url  :  '{:url("manager/status_edit")}',
+        dataType : 'json',
+        data : {userid:userid,ispower:ispower},
+        success : function(re){
+          if(re.status == 1){
+             layer.msg(re.msg);return false;
+          }
+          layer.msg(re.msg);
+          // window.location.reload();
+        }
+       });
+  });
+
+
+
+});
+  
+ 
+</script>
+{/block}

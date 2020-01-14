@@ -1,0 +1,113 @@
+{extend name="index_layout"/}
+{block name="main"}
+<style type="text/css">
+    .daoru{position:absolute;top:1px;right:-50px;height:35px}
+
+</style>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <div class="layui-form">
+            <blockquote class="layui-elem-quote news_search">
+                <div class="layui-inline">
+                    <a class="layui-btn layui-btn-sm" href="{:url('admin/manager/add')}">生成账号</a>
+                </div>
+                <div class="layui-input-inline" style="margin-left:30px;">
+                   <form method="get" action="{:url('Manager/index')}" class="form-signin" enctype="multipart/form-data">
+                    <input type="text" name="search" placeholder="按账号、手机号搜索" autocomplete="off" class="layui-input">
+                    <input type="submit" value="搜索" class="layui-btn layui-btn-sm daoru">
+                  </form>
+                 </div>  
+                 <!-- 下拉框查询分公司 -->
+            <!--     <div class="layui-input-inline" style="float: right;">
+                    <select name="companyid" lay-filter="companyid">
+                        <option value=""></option>
+               
+                    </select>
+                </div>  -->
+            </blockquote>
+            <table class="layui-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>操作</th>
+                        <th>登录名</th>
+                        <th>手机号</th>
+                        <th>所属角色</th>
+                        <th>状态</th>
+                        <!-- <th>最后登录地址</th> -->
+                        <!-- <th>最后登录时间</th> -->
+                        <th>E-mail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {volist name="Userlist" id="vo"}
+                    <tr>
+                        <td>{$i}</td>
+                        <td>
+                            <a class="layui-btn layui-btn-xs" href="{:url('admin/manager/edit',['id'=>$vo.userid])}">编辑</a>
+                            {if $vo['roleid'] == 1}
+                            <a class="layui-btn layui-btn-disabled layui-btn-xs">删除</a>
+                            {else /}
+                            <a class="layui-btn layui-btn-danger layui-btn-xs ajax-get confirm" url="{:url('admin/manager/del',['id'=>$vo.userid])}">删除</a>
+                            {/if}
+                            
+                            <!-- <a class="layui-btn layui-btn-{php} echo ($vo['status']==1)?'danger':'disabled'{/php} layui-btn-xs ajax-get confirm" url="{:url('admin/manager/bankai',['id'=>$vo.userid,'status'=>$vo.status])}">{php} echo ($vo['status']==1)?'禁用':'已禁用'{/php}</a> -->
+                        </td>
+                        <td>{$vo.username}</td>
+                        <td>{$vo.phone}</td>
+                        <td>{if !is_numeric(model('admin/AuthGroup')->getRoleIdName($vo['roleid'])) } <?php echo model('admin/AuthGroup')->getRoleIdName($vo['roleid']);?> {else /} <?php echo getcid(model('admin/AuthGroup')->getRoleIdName($vo['roleid']));?> {/if}</td>
+                        <td>{if $vo['status'] == 1} 正常 {else /} <span style="color:red">禁用</span> {/if}</td>
+                        <td>{$vo.email}</td>
+
+                    </tr>
+                    {/volist}
+                </tbody>
+            </table>
+            {$Userlist->render()|raw}
+        </div>
+    </div>
+</div>
+{/block} {block name="script"}
+<script type="text/javascript" src="__STATIC__/admin/js/common.js"></script>
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+layui.use(['form', 'layedit', 'laydate','table'], function(){
+  var form = layui.form
+  ,layer = layui.layer
+  ,layedit = layui.layedit
+  ,laydate = layui.laydate
+  ,table = layui.table;
+
+
+  //监听指定开关
+  form.on('switch(switchTest)', function(data){
+     if(this.checked){
+        var ispower = 1;
+     }else{
+        var ispower = 0;
+     }
+     var userid = data.othis.siblings(':checkbox[name="open"]').attr('data-userid');
+
+     // alert(id +'---'+ status)
+       $.ajax({
+        type : 'post',
+        url  :  '{:url("manager/status_edit")}',
+        dataType : 'json',
+        data : {userid:userid,ispower:ispower},
+        success : function(re){
+          if(re.status == 1){
+             layer.msg(re.msg);return false;
+          }
+          layer.msg(re.msg);
+          // window.location.reload();
+        }
+       });
+  });
+
+
+
+});
+  
+ 
+</script>
+{/block}

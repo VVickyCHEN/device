@@ -1,0 +1,127 @@
+{extend name="index_layout"/}
+{block name="main"}
+<style type="text/css">
+    .daoru{position:absolute;top:1px;right:-50px;height:35px}
+   .laytable-cell-1-0-3{  /*设置列表图片高度*/
+       height: 100%;
+       max-width: 100%;
+   } 
+</style>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <div class="layui-form">
+            <blockquote class="layui-elem-quote news_search">
+                <div class="layui-inline">
+                    <a class="layui-btn layui-btn-sm" href="{:url('admin/setmeal/add')}">添加套餐</a>
+                </div>
+                <div class="layui-input-inline" style="margin-left:30px;">
+                   <form method="get" action="{:url('setmeal/index')}" class="form-signin" enctype="multipart/form-data">
+                    <input type="text" name="search" placeholder="套餐标题搜索" autocomplete="off" class="layui-input">
+                    <input type="submit" value="搜索" class="layui-btn layui-btn-sm daoru">
+                  </form>
+                 </div>  
+            </blockquote>
+            <table class="layui-table" lay-filter="test3"  lay-data="{id: '#test3',page:true,limit:10}">
+                <thead>
+                    <tr>
+                        <th lay-data="{field:'xuhao',width:80,}">序号</th>
+                        <th  lay-data="{field:'sname',width:150}">套餐名</th>
+                        <th  lay-data="{field:'title',}">套餐标题</th>
+                        <th  lay-data="{field:'img_url',style:'height:70px;'}">套餐封面</th>
+                        <th  lay-data="{field:'edit',width:120,}">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {volist name="data" id="vo"}
+                    <tr>
+                        <td>{$i}</td>
+                        <td>{$vo.sname}</td>
+                        <td>{$vo.stitle}</td>
+                        <td>{if $vo.img_url}<img class="preview" src="__UPLOADS__/{$vo.img_url}">{else / }<img src="__STATIC__/admin/images/pic_null.png">{/if}</td>
+                        <td>
+                           <a class="layui-btn layui-btn-xs" href="{:url('admin/setmeal/edit',['id'=>$vo.id])}">编辑</a>
+                        </td>
+                    </tr>
+                    {/volist}
+                </tbody>
+            </table>
+           <!-- tp自带的分页 -->
+
+        </div>
+    </div>
+</div>
+{/block} {block name="script"}
+<script type="text/javascript" src="__STATIC__/admin/js/common.js"></script>
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+  //点击图片预览
+      $(document).on('click','img.preview',function(){
+          previewImg(this);
+      });
+       function previewImg(obj) { 
+           var img = new Image(); img.src = obj.src; 
+           var height = img.height + 50; //获取图片高度 
+           var width = img.width; //获取图片宽度 
+           var imgHtml = "<img src='" + obj.src + "' />"; //弹出层 
+          //  if(width < 200){
+          //   width = 200;
+          // }
+          //  if(height < 300){
+          //   height = 300;
+          // }
+           layer.open({ 
+             type: 1, 
+             shade: 0.8, 
+             offset: 'auto', 
+             area: [width + 'px',height+'px'], 
+             shadeClose:true,//点击外围关闭弹窗 
+             scrollbar: false,//不现实滚动条 
+             title: "图片预览", //不显示标题  
+             content: imgHtml, //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响  
+             cancel: function () { 
+             //layer.msg('捕获就是从页面已经存在的元素上，包裹layer的结构', { time: 5000, icon: 6 });  
+              } 
+           }); 
+      }
+</script>
+<script type="text/javascript">
+layui.use(['form', 'layedit', 'laydate','table'], function(){
+  var form = layui.form
+  ,layer = layui.layer
+  ,layedit = layui.layedit
+  ,laydate = layui.laydate
+  ,table = layui.table;
+
+
+  //监听指定开关
+  form.on('switch(switchTest)', function(data){
+     if(this.checked){
+        var ispower = 1;
+     }else{
+        var ispower = 0;
+     }
+     var userid = data.othis.siblings(':checkbox[name="open"]').attr('data-userid');
+
+     // alert(id +'---'+ status)
+       $.ajax({
+        type : 'post',
+        url  :  '{:url("manager/status_edit")}',
+        dataType : 'json',
+        data : {userid:userid,ispower:ispower},
+        success : function(re){
+          if(re.status == 1){
+             layer.msg(re.msg);return false;
+          }
+          layer.msg(re.msg);
+          // window.location.reload();
+        }
+       });
+  });
+
+
+
+});
+  
+ 
+</script>
+{/block}
