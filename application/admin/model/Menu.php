@@ -31,6 +31,7 @@ class Menu extends Model
     final public function getTree($myid, $parent = "", $Level = 1)
     {
         $data = $this->adminMenu($myid);
+
         $Level++;
         if (is_array($data)) {
             $ret = null;
@@ -48,6 +49,8 @@ class Menu extends Model
                     "menuid" => $id,
                     "id" => $id . $name,
                     "title" => $a['title'],
+                    "tradition" => $a['tradition'],
+                    "eng_title" => $a['eng_title'],
                     "icon" => $a['icon'],
                     "parent" => $parent,
                     "url" => url("{$name}/{$controller}/{$action}{$fu}", array("menuid" => $id)),

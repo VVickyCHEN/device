@@ -103,14 +103,7 @@ class Login extends Controller
                 }               
             }else{
                 return  $this->error('请输入正确账号');
-            } 
-           // if($data['status'] == 1){
-           //    $yzm = rand(1000,9999);
-           //    // 设置
-           //    cookie('vcode', $yzm, 3600);
-           //    Result(0,'成功',$data); 
-           // }
-           
+            }   
 
          }else{
             Result(1,'获取失败');  
@@ -139,25 +132,20 @@ class Login extends Controller
             $this->error('验证码错误');
         }
        
-       
-            if($data['status'] == 1){
-                    // $info['status'] = 1;
-                    // $info['url']    = url('admin/Index/index');
-                    //dump(1);exit;
-                    $this->success('登录成功','admin/Index/index');
-                    // $this->redirect('admin/index/index');
-                    // echo json_encode($info);die;
-                }else{
-                    session(null);
-                    cookie("forward", NULL);
-                    $info['status'] = 0;
-                    $info['info']   = '您账号被禁用，请联系总管理';
-                    $this->error('您账号被禁用，请联系总管理');
-                    //dump(2);exit;
-                    //echo json_encode($info);die;
-                }
-           
-        
+        if($data['status'] == 1){
+            cookie('think_var',input('lang_string'));//储存cookie使用语言包
+            $this->success('登录成功','admin/Index/index');
+        }else{
+            session(null);
+            cookie("forward", NULL);
+            $info['status'] = 0;
+            $info['info']   = '您账号被禁用，请联系总管理';
+            $this->error('您账号被禁用，请联系总管理');
+            //dump(2);exit;
+            //echo json_encode($info);die;
+        }
+
+
 
         
     }

@@ -13,34 +13,15 @@ class Main extends Adminbase
     //欢迎首页
     public function index()
     {
-        // if (Session('admin_user_auth')['sid'] != '0') {
-        //     $map1[] = $maps[] = ['sid','eq',Session('admin_user_auth')['sid']];
-        //     $where['id']     = Session('admin_user_auth')['sid'];
-        // }else{
-        //   $maps   = '';
-        //   $where  = '';
-        // }
-        // $username['username'] =  $_SESSION['username'];
-        // $logininfo   =     
-        $re     = Session('admin_user_auth');
-
-
+  
+        $re = Session('admin_user_auth');
         $getcid = Db::name('admin')->where(array('userid'=>$re['uid']))->find();
-        // $huoid = array('name'=>getcid($getcid['companyid']));
         $rerole = Db::name('auth_group')->field('id,title,description')->where(array('id'=>$re['roleid']))->find();      
-        // $rerole = array_merge($huoid,$rerole);
-        // $py     = Db::name('shop')->field('name,money,phone')->where($where)->find();
-
+    
         $countclick='';
-        // $this->assign('py',$py);
         $this->assign('re',$re);
         $this->assign('rerole',$rerole);
-
-
         $this->assign('sys_info', $this->get_sys_info());
-
-         // dump($re);
-
         $this->assign('session_info', $_SESSION);
         return $this->fetch();
     }
@@ -81,7 +62,7 @@ class Main extends Adminbase
     //新增用户曲线图
     public function zhuceliang()
     {
-        $j         = date("t"); //获取当前月天数
+        $j = date("t"); //获取当前月天数
         $monthlist = array();
         for($i = 0; $i < $j; $i++){
             $monthlist[] = date('m-d',strtotime("-".$i." day"));

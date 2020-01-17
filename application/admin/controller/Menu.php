@@ -54,10 +54,10 @@ class Menu extends Adminbase
                 $data['status'] = 1;
             }
             if ($this->Menu->add($data)) {
-                $this->success("添加成功！", url("Menu/index"));
+                $this->success(lang('add success'), url("Menu/index"));
             } else {
                 $error = $this->Menu->getError();
-                $this->error($error ? $error : '添加失败！');
+                $this->error($error ? $error : lang('add failure'));
             }
         } else {
             $tree = new \util\Tree();
@@ -87,10 +87,10 @@ class Menu extends Adminbase
                 $data['status'] = 1;
             }
             if ($this->Menu->edit($data)) {
-                $this->success("编辑成功！", url("Menu/index"));
+                $this->success(lang('edit success'), url("Menu/index"));
             } else {
                 $error = $this->Menu->getError();
-                $this->error($error ? $error : '编辑失败！');
+                $this->error($error ? $error : lang('edit failure'));
             }
         } else {
             $tree = new \util\Tree();
@@ -128,7 +128,7 @@ class Menu extends Adminbase
         if ($this->Menu->del($id) !== false) {
             $this->success("删除菜单成功！");
         } else {
-            $this->error("删除失败！");
+            $this->error(lang('delete success'));
         }
     }
 

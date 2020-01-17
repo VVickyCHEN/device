@@ -125,7 +125,7 @@
                                 .gg_class .news {white-space: nowrap;cursor: pointer;}
                                 </style>
                                <div class="layui-breadcrumb" lay-separator=">" style="visibility: visible;">
-                                <div style="margin: 10px 0;height: 38px">您当前所在位置：<a><cite>首页</cite></a>   </div>
+                                <div style="margin: 10px 0;height: 38px">{:lang('current location')}<a><cite>{:lang('home page')}({:lang('thislanguage')})</cite></a>   </div>
                                
                                         </div>
                                         <div class="background"></div>
@@ -133,7 +133,7 @@
 
     <div class="layui-row">
         <div class="information-box" >
-            <p class="index-title">帐户信息 <!--  --><a href="{:url('main/edit')}"><span style="margin-left:30px;color:green;display:none;">信息修改</span></a><!-- <a href="{:url('manager/myedit',['id'=>$re['uid']])}" style="float:right;"><cite>修改个人数据</cite></a> --></p>
+            <p class="index-title">{:lang('account information')}</p>
              {if $Think.session.admin_user_auth.pyid != '0'}
             <div class="countInfo">
                 <div class="infoleft">
@@ -143,10 +143,10 @@
                     <div class="mess" style="float:left;">
                         <h3 class="" style="font-weight: bold;padding-top: 10px;">{$Think.session.admin_user_auth.name}</h3>
                         <!--<p class="index-p">邮箱:<span>--</span></p>-->
-                        <p class="index-p">手机:<span>{$Think.session.admin_user_auth.phone}</span></p>
-                        <p class="index-p">上次登录时间:<span>{$Think.session.admin_user_auth.last_login_time|date='Y-m-d H:i:s'}</span></p>
+                        <p class="index-p">{:lang('phone')}:<span>{$Think.session.admin_user_auth.phone}</span></p>
+                        <p class="index-p">{:lang('last logon time')}:<span>{$Think.session.admin_user_auth.last_login_time|date='Y-m-d H:i:s'}</span></p>
                         <!--<p class="index-p">上次登录IP:<span>113.77.146.30</span></p>-->
-                        <p class="index-p">上次登录地址:<span class="userct">{$Think.session.admin_user_auth.last_login_address}</span></p>
+                        <p class="index-p">{:lang('last logon address')}:<span class="userct">{$Think.session.admin_user_auth.last_login_address}</span></p>
                     </div>
                      <div class="xinxi">
                          <h2 style="text-align: center;line-height:52px">{if !is_numeric($rerole['title'])} {$rerole['title']} {else /} <?php echo getcid($rerole['title']);?> {/if}</h2>
@@ -154,7 +154,6 @@
                          <p class="index-p">{$rerole['description']}</p>
                      </div>   
                 </div>
-                 <!-- <?php dump($rerole)?> -->
             </div>
             {else /}
             <h1 style="text-align: center;line-height: 10rem;">超级管理员</h1>

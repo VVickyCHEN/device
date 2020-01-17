@@ -15,10 +15,14 @@ class Member extends Model
 
     // use SoftDelete;
     // set 开头的是修改器
-    // public function setStartTimeAttr($value)
+    // public function setLastloginTimeAttr($value)
     // {
     //     return strtotime($value);
     // }
+
+    public function setPasswordAttr($value){
+        return md5($value);
+    }
 
     // 系统支持自动写入创建和更新的时间戳字段 
     protected $autoWriteTimestamp = true;

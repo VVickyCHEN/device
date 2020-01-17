@@ -1,96 +1,136 @@
 {extend name="index_layout"/}
 {block name="main"}
 <style type="text/css">
-    .daoru{position:absolute;top:1px;right:-50px;height:35px}
-
+.daoru{position:absolute;top:1px;right:-50px;height:35px}
+.tupian{
+  max-width:200px;
+  display: flex;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+}
+.layui-table-cell{
+  display:table-cell;
+  vertical-align: middle;
+}
 </style>
 <div class="layui-card">
     <div class="layui-card-body">
         <div class="layui-form">
+            
             <blockquote class="layui-elem-quote news_search">
                 <div class="layui-inline">
-                    <!-- <a class="layui-btn layui-btn-sm" href="{:url('admin/manager/add')}">生成会员</a> -->
+                    <a class="layui-btn layui-btn-sm" href="{:url('admin/member/add')}">{:lang('add member')}</a>
                 </div>
                 <div class="layui-input-inline" style="margin-left:30px;">
                    <form method="get" action="{:url('Member/index')}" class="form-signin" enctype="multipart/form-data">
-                    <input type="text" name="search" placeholder="手机号搜索" autocomplete="off" class="layui-input">
-                    <input type="submit" value="搜索" class="layui-btn layui-btn-sm daoru">
+                    <input type="text" name="search" placeholder="{:lang('email')}" autocomplete="off" class="layui-input">
+                    <input type="submit" value="{:lang('search')}" class="layui-btn layui-btn-sm daoru">
                   </form>
                  </div>  
             </blockquote>
-            <table class="layui-table" lay-filter="test3"  lay-data="{id: '#test3',page:true,limit:10}">
+            <img alt="" style="display:none" id="displayImg" src="" />
+            <table class="layui-table" lay-filter="table_monitor" lay-data="{id: '#table_monitor',page:true,limit:10}">
                 <thead>
                     <tr>
-                        <th lay-data="{field:'xuhao',width:80,}">序号</th>
-                        <th  lay-data="{field:'member_number',}">会员编号</th>
-                        <th  lay-data="{field:'phone',}">手机号</th>
-                        <th  lay-data="{field:'invite_code',}">会员邀请码</th>
-                        <th  lay-data="{field:'integral',}">会员积分</th>
-                        <th  lay-data="{field:'addtime',width:180,}">注册时间</th>
-                        <th  lay-data="{field:'edit',width:120,}">操作</th>
+                        <th lay-data="{field:'xuhao',width:80}">{:lang('serial number')}</th>
+                        <th  lay-data="{field:'id'}">{:lang('account')}ID</th>
+                        <th  lay-data="{field:'nickname'}">{:lang('nickname')}</th>
+                        <th  lay-data="{field:'head_img_thumb',width:220}">{:lang('head_img')}</th>
+                        <th  lay-data="{field:'email'}">{:lang('email')}</th>
+                        <th  lay-data="{field:'lastlogin_time',width:180}">{:lang('last logon time')}</th>
+                        <th  lay-data="{field:'create_time',width:180}">{:lang('register time')}</th>
+                        <th  lay-data="{field:'update_time',width:180}">{:lang('update time')}</th>
+                        <th  lay-data="{field:'edit',width:120}">{:lang('operation')}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {volist name="Userlist" id="vo"}
                     <tr>
-                        <td>{$i}</td>
-                        <td>{$vo.member_number}</td>
-                        <td>{$vo.phone}</td>
-                        <td>{$vo.invite_code}</td>
-                        <td>{$vo.integral}</td>
-                        <td>{$vo.addtime|date='Y-m-d H:i:s'}</td>
-                        <td>
-                           <a class="layui-btn layui-btn-xs" href="{:url('admin/member/edit',['id'=>$vo.id])}">查看</a>
+                        <td class="taleft">{$i}</td>
+                        <td class="taleft">{$vo.id}</td>
+                        <td class="taleft">{$vo.nickname}</td>
+                        <td class="taleft">{if $vo['head_img_thumb']} <img title="show deteil" class="tupian" orgin_src="__UPLOADS__/{$vo.head_img}" src="__UPLOADS__/{$vo.head_img_thumb}">{else /}nothing{/if}</td>
+                        <td class="taleft">{$vo.email}</td>
+                        <td class="taleft">
+                          {if $vo['lastlogin_time']}
+                            {$vo.lastlogin_time|date='Y-m-d H:i:s'}
+                          {else/}
+                            Not yet logged in
+                          {/if}
+                        </td>
+                        <td class="taleft">{$vo.create_time|date='Y-m-d H:i:s'}</td>
+                        <td class="taleft">{$vo.update_time|date='Y-m-d H:i:s'}</td>
+                        <td class="taleft">
+                           <a class="layui-btn layui-btn-xs" lay-event="edit" href="{:url('admin/member/edit',['id'=>$vo.id])}">{:lang('operation')}</a>
+                           <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">{:lang('delete')}</a>
                         </td>
                     </tr>
                     {/volist}
                 </tbody>
             </table>
-           <!-- tp自带的分页 -->
-
+            {$page|raw}
         </div>
     </div>
 </div>
-{/block} {block name="script"}
-<script type="text/javascript" src="__STATIC__/admin/js/common.js"></script>
+{/block} 
+{block name="script"}
+
 <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
-layui.use(['form', 'layedit', 'laydate','table'], function(){
-  var form = layui.form
-  ,layer = layui.layer
-  ,layedit = layui.layedit
-  ,laydate = layui.laydate
-  ,table = layui.table;
 
+$(document).on('click','.tupian',function(){
+  var url = $(this).attr('orgin_src');
+  $("#displayImg").attr("src", url);
 
-  //监听指定开关
-  form.on('switch(switchTest)', function(data){
-     if(this.checked){
-        var ispower = 1;
-     }else{
-        var ispower = 0;
-     }
-     var userid = data.othis.siblings(':checkbox[name="open"]').attr('data-userid');
+  var height = $("#displayImg").height();//拿的图片原来宽高，建议自定义宽高
+  var width = $("#displayImg").width();
 
-     // alert(id +'---'+ status)
-       $.ajax({
-        type : 'post',
-        url  :  '{:url("manager/status_edit")}',
-        dataType : 'json',
-        data : {userid:userid,ispower:ispower},
-        success : function(re){
-          if(re.status == 1){
-             layer.msg(re.msg);return false;
-          }
-          layer.msg(re.msg);
-          // window.location.reload();
-        }
-       });
+  layer.open({
+      type: 1,
+      title: '查看大图',
+      closeBtn: 1,
+      shadeClose: true,
+      area: ['1000px','800px'], //宽高
+      content: "<img src=" + url + " />"
   });
-
-
-
 });
+
+layui.use(['table'], function(){
+  var table = layui.table;
+
+  //监听行工具事件
+  table.on('tool(table_monitor)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+    var data = obj.data //获得当前行数据
+    ,layEvent = obj.event; //获得 lay-event 对应的值
+    if(layEvent === 'edit'){
+      window.location.href = "{:url('admin/member/edit')}"+'?id='+data.id;
+    } else if(layEvent === 'del'){
+      layer.confirm('确定删除用户吗?', function(index){
+          
+          layer.close(index);
+          $.ajax({
+            type : 'post',
+            url  :  '{:url("member/del")}',
+            dataType : 'json',
+            data : {id:data.id},
+            success : function(re){
+              layer.closeAll();
+              if(re.code == 1){
+                layer.msg(re.msg,{icon:1});
+                obj.del();
+              }else{
+                layer.msg(re.msg,{icon:2});return false;
+              }
+            }
+          });
+      });
+    }
+
+  });
+});
+
+
   
  
 </script>
