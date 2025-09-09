@@ -1,0 +1,144 @@
+{
+  "type": "object",
+  "properties": {
+    "layout": {
+      "type": "void",
+      "x-component": "FormLayout",
+      "x-component-props": {
+        "layout": "vertical"
+      },
+      "properties": {
+        "id": {
+          "type": "number"
+        },
+        "cid": {
+          "type": "string",
+          "title": "生效cid",
+          "x-decorator": "FormItem",
+          "required": true,
+          "x-component": "Input",
+          "x-reactions": [
+            "{{trimInputValue()}}"
+          ]
+        },
+        "vid_list": {
+          "type": "string",
+          "title": "vid",
+          "x-decorator": "FormItem",
+          "x-component": "Input",
+          "x-reactions": [
+            "{{trimInputValue()}}"
+          ]
+        },
+        "time_offset": {
+          "type": "string"
+        },
+        "time_offset2": {
+          "type": "string",
+          "x-decorator": "FormItem",
+          "title": "指定播放时间第几秒",
+          "kt-filter": true,
+          "x-component": "TimePicker",
+          "x-component-props": {
+            "value-format": "HH:mm:ss",
+            "placeholder": "指定播放时间第几秒"
+          },
+          "x-reactions": [
+            {
+              "dependencies": [
+                "time_offset"
+              ],
+              "fulfill": {
+                "state": {
+                  "value": "{{ (() => { const sec = Number($deps[0]); const h = String(Math.floor(sec / 3600)).padStart(2, '0'); const m = String(Math.floor((sec % 3600) / 60)).padStart(2, '0');const s = String(sec % 60).padStart(2, '0');return `${h}:${m}:${s}`;})() }}"
+                }
+              }
+            },
+            {
+              "target": [
+                "time_offset"
+              ],
+              "effects": [
+                "onFieldValueChange"
+              ],
+              "fulfill": {
+                "state": {
+                  "value": "{{ (() => { if(!$self.value) return 0; const [h,m,s]=$self.value.split(':').map(Number); return h*3600+m*60+s; })() }}"
+                }
+              }
+            }
+          ]
+        },
+        "text": {
+          "type": "string",
+          "title": "文案",
+          "required": true,
+          "x-decorator": "FormItem",
+          "x-component": "Input.TextArea",
+          "x-reactions": [
+            "{{trimInputValue()}}"
+          ]
+        },
+        "valid_start_time": {
+          "type": "string",
+          "title": "开始时间",
+          "default": "",
+          "x-decorator": "FormItem",
+          "x-component": "DatePicker",
+          "x-component-props": {
+            "type": "datetime",
+            "format": "yyyy-MM-dd HH:mm:ss",
+            "valueFormat": "yyyy-MM-dd HH:mm:ss",
+            "placeholder": "选择开始日期时间",
+            "pickerOptions": "{{offlineTimePickerOptions}}"
+          }
+        },
+        "valid_end_time": {
+          "type": "string",
+          "title": "结束时间",
+          "default": "",
+          "x-decorator": "FormItem",
+          "x-component": "DatePicker",
+          "x-component-props": {
+            "type": "datetime",
+            "format": "yyyy-MM-dd HH:mm:ss",
+            "valueFormat": "yyyy-MM-dd HH:mm:ss",
+            "placeholder": "选择结束日期时间",
+            "pickerOptions": "{{offlineTimePickerOptions}}"
+          }
+        },
+        "comm_selectors": {
+          "type": "string"
+        },
+        "bind_comm_selectors": {
+          "type": "array",
+          "title": "添加选择器",
+          "kt-filter": true,
+          "x-decorator": "FormItem",
+          "x-component": "KTSelector",
+          "x-component-props": {
+            "showTemp": true,
+            "showEmptyTable": false,
+            "isShowValidLicenseType": true,
+            "isShowCooperationMode": true,
+            "isShowProductionLine": true,
+            "isShowControllableType": true,
+            "isShowVipType": true,
+            "isShowSportVipType": true,
+            "isShowKtBossChannel": true,
+            "isShowPayStatus": true,
+            "isShowSelfOpts": true,
+            "isShowCategories": true,
+            "isShowCrowdRule": true,
+            "maxCrowdNumber": 5
+          },
+          "x-reactions": [
+            "{{jsonParseToArray(\"comm_selectors\")}}",
+            "{{arrayStringifyToTarget(\"comm_selectors\")}}"
+          ]
+        }
+      }
+    }
+  },
+  "title": "form_player_bottom_config"
+}
